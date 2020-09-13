@@ -10,4 +10,4 @@ spec:
     repository: https://weaveworks.github.io/kured
     name: kured
     version: 2.2.0
-  values: 
+  values: {}
