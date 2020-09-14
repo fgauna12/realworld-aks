@@ -14,7 +14,7 @@ resource "kubernetes_namespace" "flux_namespace" {
   }
 }
 
-#kubernetes crds
+#kubernetes crds are not supported using the kubernetes provider
 
 #flux
 # helm upgrade -i flux fluxcd/flux \                     
