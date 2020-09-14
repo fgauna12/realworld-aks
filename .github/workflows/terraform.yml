@@ -67,10 +67,11 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: ./iac/staging/1-cluster
     
-    - name: Get Cluster Info
+    - name: Connect to Cluster
       run: |
         CLUSTER_NAME=$(terraform output -no-color cluster_name)
         RESOURCE_GROUP=$(terraform output -no-color resource_group_name)
+        az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
         echo '::set-env name=AKS_CLUSTER_NAME::$CLUSTER_NAME'
         echo '::set-env name=AKS_RESOURCE_GROUP::$RESOURCE_GROUP'
       working-directory: ./iac/staging/1-cluster
@@ -83,7 +84,6 @@ jobs:
     - name: Connect Cluster to Azure Arc and Configure GitOps Manually
       if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       run: |
-        az aks get-credentials -g $AKS_RESOURCE_GROUP -n $AKS_CLUSTER_NAME
         az connectedk8s connect --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP
              
         echo "Installing flux CRDs. Version $FLUX_VERSION"
@@ -103,8 +103,7 @@ jobs:
     - name: Terraform Init
       run: terraform init
       working-directory: ./iac/staging/2-gitops
-      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP
-      
+      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP      
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
