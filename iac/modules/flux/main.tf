@@ -28,6 +28,7 @@ resource "helm_release" "flux" {
   repository = "https://charts.fluxcd.io" 
   chart      = "flux"
   version    = var.flux_version
+  namespace  = var.flux_namespace
 
   set {
     name  = "git.url"
@@ -45,29 +46,21 @@ resource "helm_release" "flux" {
 # helm upgrade -i helm-operator fluxcd/helm-operator \   
 #    --set helm.versions=v3 --set git.ssh.secretName=flux-git-deploy \
 #    --namespace flux
-# resource "helm_release" "helm_operator" {
-#   name       = "helm-operator"
-#   repository = "https://kubernetes-charts.storage.googleapis.com" 
-#   chart      = "redis"
-#   version    = "6.0.1"
+resource "helm_release" "helm_operator" {
+  name       = "helm-operator"
+  repository = "https://charts.fluxcd.io" 
+  chart      = "helm-operator"
+  version    = var.flux_version
+  namespace  = var.flux_namespace
 
-#   values = [
-#     "${file("values.yaml")}"
-#   ]
+  set {
+    name  = "helm.versions"
+    value = "v3"
+  }
 
-#   set {
-#     name  = "cluster.enabled"
-#     value = "true"
-#   }
-
-#   set {
-#     name  = "metrics.enabled"
-#     value = "true"
-#   }
-
-#   set_string {
-#     name  = "service.annotations.prometheus\\.io/port"
-#     value = "9127"
-#   }
-# }
+  set {
+    name  = "git.ssh.secretName"
+    value = "flux-git-deploy"
+  }
+}
 
