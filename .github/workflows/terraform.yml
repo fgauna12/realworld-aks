@@ -1,0 +1,122 @@
+name: 'Terraform'
+
+on:
+  workflow_dispatch:
+    inputs:
+      comment:
+  push:
+    branches:
+    - master
+    paths: 
+    - "iac/*"
+  pull_request:
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest    
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        
+    env:
+      TERRAFORM_BACKEND_RESOURCE_GROUP: rg-terraform-staging
+      TERRAFORM_BACKEND_STORAGE_ACCOUNT: stterraformstg001
+      TERRAFORM_BACKEND_CONTAINER_NAME: realworld
+      TF_VAR_aks_service_principal_client_id: ${{ secrets.AKS_CLIENT_ID }}
+      TF_VAR_aks_service_principal_client_secret: ${{ secrets.AKS_CLIENT_SECRET }}
+      ARM_CLIENT_ID: ${{ secrets.PIPELINE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.PIPELINE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.PIPELINE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.PIPELINE_TENANT_ID }}  
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }} 
+      FLUX_VERSION: "v1.2.0"
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_wrapper: false
+    
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./iac/staging/1-cluster
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+      working-directory: ./iac/staging/1-cluster
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./iac/staging/1-cluster
+
+      # On push to master, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      run: terraform apply -auto-approve
+      working-directory: ./iac/staging/1-cluster
+
+    - name: Install Azure Arc Extensions
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      run: |
+        az extension add --name connectedk8s
+        az extension add --name k8sconfiguration
+    - name: Connect Cluster to Azure Arc and Configure GitOps Manually
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      run: |
+        AKS_CLUSTER_NAME=$(terraform output -no-color cluster_name)
+        AKS_RESOURCE_GROUP=$(terraform output -no-color resource_group_name)
+        az aks get-credentials -g $AKS_RESOURCE_GROUP -n $AKS_CLUSTER_NAME
+        az connectedk8s connect --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP
+             
+        echo "Installing flux CRDs. Version $FLUX_VERSION"
+        kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/$FLUX_VERSION/deploy/crds.yaml
+#        az k8sconfiguration create \
+#          --name realworld \
+#          --resource-group $AKS_RESOURCE_GROUP --cluster-name $AKS_CLUSTER_NAME \
+#          --operator-instance-name flux --operator-namespace flux \
+#          --operator-params='--git-readonly --git-path=k8s' \
+#          --enable-helm-operator --helm-operator-version='0.6.0' \
+#          --helm-operator-params='--set helm.versions=v3' \
+#          --repository-url https://github.com/fgauna12/realworld-aks.git  \
+#          --scope namespace --cluster-type connectedClusters
+
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./iac/staging/2-gitops
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+      working-directory: ./iac/staging/2-gitops
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./iac/staging/2-gitops
+
+      # On push to master, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      run: terraform apply -auto-approve
+      working-directory: ./iac/staging/2-gitops
