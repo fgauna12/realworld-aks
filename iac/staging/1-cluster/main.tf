@@ -24,7 +24,7 @@ locals {
 }
 
 module "cluster" {
-  source = "../modules/aks-cluster"
+  source = "../../modules/aks-cluster"
 
   location                            = local.location
   node_count                          = local.node_count
