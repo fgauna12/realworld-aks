@@ -5,6 +5,9 @@ terraform {
     kubernetes = {
       version = "~> 1.13.2"
     }
+    helm = {
+      version = "~> 1.3.0"
+    }
   }
 }
 
@@ -20,31 +23,22 @@ resource "kubernetes_namespace" "flux_namespace" {
 # helm upgrade -i flux fluxcd/flux \                     
 #    --set git.url=git@github.com:fgauna12/realworld-aks.git \        
 #    --set git.path=k8s --namespace flux
-# resource "helm_release" "helm_operator" {
-#   name       = "helm-operator"
-#   repository = "https://kubernetes-charts.storage.googleapis.com" 
-#   chart      = "redis"
-#   version    = "6.0.1"
+resource "helm_release" "flux" {
+  name       = "flux"
+  repository = "https://charts.fluxcd.io" 
+  chart      = "flux"
+  version    = var.flux_version
 
-#   values = [
-#     "${file("values.yaml")}"
-#   ]
+  set {
+    name  = "git.url"
+    value = var.git_url
+  }
 
-#   set {
-#     name  = "cluster.enabled"
-#     value = "true"
-#   }
-
-#   set {
-#     name  = "metrics.enabled"
-#     value = "true"
-#   }
-
-#   set_string {
-#     name  = "service.annotations.prometheus\\.io/port"
-#     value = "9127"
-#   }
-# }
+  set {
+    name  = "git.path"
+    value = var.git_path
+  }
+}
 
 #helm operator
 
