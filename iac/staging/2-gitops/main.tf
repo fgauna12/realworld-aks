@@ -14,7 +14,7 @@ module "cluster" {
   source = "../../modules/flux"
 
   flux_namespace = "flux"
-  flux_version = var.flux_version
+  flux_version   = var.flux_version
   git_url        = "git@github.com:fgauna12/realworld-aks.git"
   git_path       = "k8s"
 }

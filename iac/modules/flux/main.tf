@@ -25,7 +25,7 @@ resource "kubernetes_namespace" "flux_namespace" {
 #    --set git.path=k8s --namespace flux
 resource "helm_release" "flux" {
   name       = "flux"
-  repository = "https://charts.fluxcd.io" 
+  repository = "https://charts.fluxcd.io"
   chart      = "flux"
   version    = var.flux_version
   namespace  = var.flux_namespace
@@ -48,7 +48,7 @@ resource "helm_release" "flux" {
 #    --namespace flux
 resource "helm_release" "helm_operator" {
   name       = "helm-operator"
-  repository = "https://charts.fluxcd.io" 
+  repository = "https://charts.fluxcd.io"
   chart      = "helm-operator"
   version    = var.flux_version
   namespace  = var.flux_namespace
