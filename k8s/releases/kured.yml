@@ -9,4 +9,9 @@ spec:
     repository: https://weaveworks.github.io/kured
     name: kured
     version: 2.2.0
-  values: {}
+  valuesFrom:
+  - secretKeyRef:
+      name: slack-secrets
+      namespace: kured
+      key: values.yaml
+      optional: true
