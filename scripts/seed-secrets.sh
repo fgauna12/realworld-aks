@@ -7,7 +7,7 @@ NAMESPACE=$(echo $2)
 
 echo "creating temp secret"
 kubectl create secret generic slack-secrets --dry-run=client \
-    --from-literal="values.yaml=$VALUES" \
+    --from-literal="values.yaml=${VALUES}" \
     -o yaml >/tmp/slack-secrets.yaml
 
 echo "encrypting"
