@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# example: scripts/seed-secrets.sh $(cat scripts/tmp.yml) kured
+# example: scripts/seed-secrets.sh ./scripts/tmp.yml kured
 
-VALUES=$(echo $1)
+FILE=$(echo $1)
 NAMESPACE=$(echo $2)
 
 echo "creating temp secret"
 kubectl create secret generic slack-secrets --dry-run=client \
-    --from-literal="values.yaml=${VALUES}" \
+    --from-file="values.yaml=$FILE" \
     -o yaml >/tmp/slack-secrets.yaml
 
 echo "encrypting"
