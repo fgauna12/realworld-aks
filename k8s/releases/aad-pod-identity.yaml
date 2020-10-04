@@ -1,0 +1,12 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: aad-pod-identity
+  namespace: kube-system
+spec:
+  releaseName: aad-pod-identity
+  chart:
+    repository: https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts
+    name: aad-pod-identity
+    version: 2.0.2
+  values: {}
