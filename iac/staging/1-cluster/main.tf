@@ -23,6 +23,11 @@ locals {
   node_count          = 3
 }
 
+resource "azurerm_resource_group" "resource_group" {
+  name     = local.resource_group_name
+  location = local.location
+}
+
 module "cluster" {
   source = "../../modules/aks-cluster"
 
