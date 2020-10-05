@@ -49,7 +49,7 @@ module "cluster" {
   enable_acr                          = false
 }
 
-module "aks_bacups" {
+module "aks_backups" {
   source = "../../modules/aks-backups"
 
   location             = local.location
