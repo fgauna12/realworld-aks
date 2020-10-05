@@ -41,7 +41,7 @@ module "cluster" {
   location                            = local.location
   node_count                          = local.node_count
   environment                         = local.environment_name
-  resource_group_name                 = local.resource_group_name
+  resource_group_name                 = azurerm_resource_group.resource_group.name
   aks_service_principal_client_id     = var.aks_service_principal_client_id
   aks_service_principal_client_secret = var.aks_service_principal_client_secret
   cluster_name                        = local.cluster_name
@@ -53,7 +53,7 @@ module "aks_backups" {
   source = "../../modules/aks-backups"
 
   location             = local.location
-  resource_group_name  = local.resource_group_name
+  resource_group_name  = azurerm_resource_group.resource_group.name
   storage_account_name = local.storage_account_name
 }
 
