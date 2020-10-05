@@ -2,8 +2,7 @@ name: 'Terraform'
 
 on:
   workflow_dispatch:
-    inputs:
-      comment:
+    inputs: {}
   push:
     branches:
     - master
@@ -44,6 +43,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_wrapper: false
+        terraform_version: 0.13.4
     
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init

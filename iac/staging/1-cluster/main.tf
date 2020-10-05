@@ -4,23 +4,30 @@ terraform {
     container_name       = "realworld"
     key                  = "staging.terraform.tfstate"
   }
+  required_providers {
+    azurerm = {
+      version = "~>v2.30"
+    }
+    azuread = {
+      version = "~>0.11"
+    }
+  }
 }
 
 provider "azurerm" {
-  version = "~>2.26"
   features {}
 }
 
 provider "azuread" {
-  version = "~>0.7"
 }
 
 locals {
-  environment_name    = "staging"
-  resource_group_name = "rg-realworld-${local.environment_name}-001"
-  cluster_name        = "azaks-realworld-${local.environment_name}-001"
-  location            = "eastus"
-  node_count          = 3
+  environment_name     = "staging"
+  resource_group_name  = "rg-realworld-${local.environment_name}-001"
+  storage_account_name = "strwbackups${local.environment_name}001"
+  cluster_name         = "azaks-realworld-${local.environment_name}-001"
+  location             = "eastus"
+  node_count           = 3
 }
 
 resource "azurerm_resource_group" "resource_group" {
@@ -41,3 +48,12 @@ module "cluster" {
   dns_prefix                          = local.cluster_name
   enable_acr                          = false
 }
+
+module "aks_bacups" {
+  source = "../../modules/aks-backups"
+
+  location             = local.location
+  resource_group_name  = local.resource_group_name
+  storage_account_name = local.storage_account_name
+}
+
