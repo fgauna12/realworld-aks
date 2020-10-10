@@ -136,7 +136,7 @@ jobs:
         echo "::set-env name=TF_VAR_identity_name::$IDENTITY_NAME"
         echo "::set-env name=TF_VAR_identity_client_id::$CLIENT_ID"
         echo "::set-env name=TF_VAR_identity_resource_id::$RESOURCE_ID"
-      working-directory: ./iac/staging/2-gitops
+      working-directory: ./iac/staging/1-cluster
       if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP
 
      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
