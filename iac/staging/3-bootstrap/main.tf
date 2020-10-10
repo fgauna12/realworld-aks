@@ -24,7 +24,7 @@ provider "kubernetes-alpha" {
   config_path = "~/.kube/config" // path to kubeconfig
 }
 
-resource "kubernetes_manifest" "azure_identity" {
+resource "kubernetes_manifest" "velero_azure_identity" {
   provider = kubernetes-alpha
 
   manifest = {
@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "azure_identity" {
   }
 }
 
-resource "kubernetes_manifest" "azure_identity_binding" {
+resource "kubernetes_manifest" "velero_azure_identity_binding" {
   provider = kubernetes-alpha
 
   manifest = {
