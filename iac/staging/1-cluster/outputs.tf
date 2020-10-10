@@ -11,9 +11,9 @@ output "velero_identity_name" {
 }
 
 output "velero_identity_client_id" {
-  value = module.aks_backsups.managed_identity_client_id
+  value = module.aks_backups.managed_identity_client_id
 }
 
 output "velero_identity_resource_id" {
-  value = module.aks_backsups.managed_identity_principal_id
+  value = module.aks_backups.managed_identity_principal_id
 }
