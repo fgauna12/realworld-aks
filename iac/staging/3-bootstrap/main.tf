@@ -8,15 +8,15 @@ terraform {
 }
 
 variable "identity_name" {
-    type = string
+  type = string
 }
 
 variable "identity_client_id" {
-    type = string
+  type = string
 }
 
 variable "identity_resource_id" {
-    type = string
+  type = string
 }
 
 provider "kubernetes-alpha" {
