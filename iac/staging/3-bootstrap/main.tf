@@ -32,7 +32,7 @@ resource "kubernetes_manifest" "velero_azure_identity" {
     kind       = "AzureIdentity"
     metadata = {
       name      = var.identity_name
-      namespace = "velero"
+      namespace = "kube-system"
     }
     spec = {
       clientID   = var.identity_client_id
@@ -50,7 +50,7 @@ resource "kubernetes_manifest" "velero_azure_identity_binding" {
     kind       = "AzureIdentityBinding"
     metadata = {
       name      = "${var.identity_name}-binding"
-      namespace = "velero"
+      namespace = "kube-system"
     }
     spec = {
       azureIdentity = var.identity_name
