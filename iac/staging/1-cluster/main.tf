@@ -57,5 +57,6 @@ module "aks_backups" {
   storage_account_name   = local.storage_account_name
   storage_container_name = "backups-${local.cluster_name}"
   identity_name          = local.backups_managed_identity_name
+  node_resource_group    = module.cluster.node_resource_group
 }
 

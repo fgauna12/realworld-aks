@@ -10,6 +10,10 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "node_resource_group" {
+  type = string
+}
+
 variable "location" {
   type = string
 }
