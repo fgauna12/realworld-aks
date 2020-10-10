@@ -1,11 +1,42 @@
-# apiVersion: helm.fluxcd.io/v1
-# kind: HelmRelease
-# metadata:
-#   name: velero
-#   namespace: kube-system
-# spec:
-#   releaseName: velero
-#   chart:
-#     repository: https://vmware-tanzu.github.io/helm-charts
-#     name: velero
-#     version: 2.13.2
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: velero
+spec:
+  releaseName: velero
+  chart:
+    repository: https://vmware-tanzu.github.io/helm-charts
+    name: velero
+    version: 2.13.2
+  values: 
+    credentials:
+      useSecret: true
+      existingSecret: velero-credentials
+    configuration:
+      provider: azure
+      backupStorageLocation: 
+        bucket: azaks-realworld-staging-001
+        config: 
+          resourceGroup: rg-realworld-staging-001
+          storageAccount: strwbackupsstaging001
+          subscriptionId: d09f4363-eae7-4c79-864e-08154540c083
+      volumeSnapshotLocation: 
+        name: azure-eastus
+        config:
+          resourceGroup: rg-realworld-staging-001
+          subscriptionId: d09f4363-eae7-4c79-864e-08154540c083
+    podLabels:
+      aadpodidbinding: velero
+    initContainers: 
+      - name: velero-plugin-for-azure
+        image: velero/velero-plugin-for-microsoft-azure:main
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+
+
+
+
+

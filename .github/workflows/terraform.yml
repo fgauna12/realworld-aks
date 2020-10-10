@@ -126,3 +126,39 @@ jobs:
       if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       run: terraform apply -auto-approve -var "flux_version=$FLUX_VERSION"
       working-directory: ./iac/staging/2-gitops
+
+    - name: Set Variables
+      run: |
+        IDENTITY_NAME=$(terraform output -no-color velero_identity_name)
+        CLIENT_ID=$(terraform output -no-color velero_identity_client_id)
+        RESOURCE_ID=$(terraform output -no-color velero_identity_resource_id)
+        echo "::set-env name=TF_VAR_identity_name::$IDENTITY_NAME"
+        echo "::set-env name=TF_VAR_identity_client_id::$CLIENT_ID"
+        echo "::set-env name=TF_VAR_identity_resource_id::$RESOURCE_ID"
+      working-directory: ./iac/staging/2-gitops
+      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP
+
+     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./iac/staging/3-bootstrap
+      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP      
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+      working-directory: ./iac/staging/3-bootstrap
+      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan"
+      working-directory: ./iac/staging/3-bootstrap
+      if: env.AKS_CLUSTER_NAME && env.AKS_RESOURCE_GROUP   
+
+      # On push to master, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      run: terraform apply -auto-approve"
+      working-directory: ./iac/staging/3-bootstrap

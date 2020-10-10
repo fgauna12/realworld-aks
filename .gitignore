@@ -1,4 +1,6 @@
 iac/staging/.terraform/
 iac/staging/1-cluster/.terraform/
 iac/staging/2-gitops/.terraform/
+iac/staging/3-bootstrap/.terraform/
 scripts/tmp.yml
+credentials-velero
