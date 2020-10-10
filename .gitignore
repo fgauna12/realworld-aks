@@ -4,3 +4,4 @@ iac/staging/2-gitops/.terraform/
 iac/staging/3-bootstrap/.terraform/
 scripts/tmp.yml
 credentials-velero
+iac/staging/3-bootstrap/dev.log
