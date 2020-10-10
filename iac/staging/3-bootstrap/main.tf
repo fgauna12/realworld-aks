@@ -31,7 +31,8 @@ resource "kubernetes_manifest" "azure_identity" {
     apiVersion = "aadpodidentity.k8s.io/v1"
     kind       = "AzureIdentity"
     metadata = {
-      name = var.identity_name
+      name      = var.identity_name
+      namespace = "kube-system"
     }
     spec = {
       clientID   = var.identity_client_id
@@ -45,14 +46,15 @@ resource "kubernetes_manifest" "azure_identity_binding" {
   provider = kubernetes-alpha
 
   manifest = {
-    "apiVersion" = "aadpodidentity.k8s.io/v1"
-    "kind"       = "AzureIdentityBinding"
-    "metadata" = {
-      "name" = "${var.identity_name}-binding"
+    apiVersion = "aadpodidentity.k8s.io/v1"
+    kind       = "AzureIdentityBinding"
+    metadata = {
+      name      = "${var.identity_name}-binding"
+      namespace = "kube-system"
     }
-    "spec" = {
-      "azureIdentity" = var.identity_name
-      "selector"      = var.identity_name
+    spec = {
+      azureIdentity = var.identity_name
+      selector      = var.identity_name
     }
   }
 }
