@@ -2,7 +2,7 @@ apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   name: aad-pod-identity
-  namespace: kube-system
+  namespace: velero
 spec:
   releaseName: aad-pod-identity
   chart:
