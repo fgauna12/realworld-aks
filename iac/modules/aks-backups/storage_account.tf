@@ -10,7 +10,9 @@ resource "azurerm_storage_account" "storage_account_aks_backups" {
 }
 
 resource "azurerm_storage_container" "velero_container" {
-  name                  = "velero"
+  name                  = var.storage_container_name
   storage_account_name  = azurerm_storage_account.storage_account_aks_backups.name
   container_access_type = "private"
 }
+
+
