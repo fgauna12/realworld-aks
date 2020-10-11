@@ -23,5 +23,5 @@ output "node_resource_group" {
 }
 
 output "kubelet_identities" {
-  value = module.cluster.kubelet
+  value = module.cluster.kubelet_identities
 }
