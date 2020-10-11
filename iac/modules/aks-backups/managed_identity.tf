@@ -4,3 +4,12 @@ resource "azurerm_user_assigned_identity" "velero_identity" {
 
   name = var.identity_name
 }
+
+data "azurerm_subscription" "current" {
+}
+
+resource "azurerm_role_assignment" "contributor_role" {
+  scope                = data.azurerm_subscription.current.subscription_id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.velero_identity.principal_id
+}
