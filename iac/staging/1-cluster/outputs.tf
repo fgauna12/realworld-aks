@@ -21,3 +21,7 @@ output "velero_identity_resource_id" {
 output "node_resource_group" {
   value = module.cluster.node_resource_group
 }
+
+output "kubelet_identities" {
+  value = module.cluster.kubelet
+}

@@ -30,3 +30,10 @@ output "kube_config" {
 output "node_resource_group" {
   value = azurerm_kubernetes_cluster.aks_cluster.node_resource_group
 }
+
+output "kubelet_identities" {
+  value = {
+        for id in azurerm_kubernetes_cluster.aks_cluster.kubelet_identity:
+        id.client_id => id.object_id
+    }
+}
