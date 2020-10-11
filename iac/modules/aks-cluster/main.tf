@@ -44,5 +44,5 @@ resource "azurerm_role_assignment" "acrpull_role" {
 resource "azurerm_role_assignment" "contributor_role_over_nodepool_resource_group" {
   scope                = data.azurerm_resource_group.node_resource_group.id
   role_definition_name = "Contributor"
-  principal_id         = azurerm_kubernetes_cluster.aks_cluster.kubelet_identity[0].client_id
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.kubelet_identity[0].object_id
 }
