@@ -29,6 +29,10 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 }
 
+data "azurerm_resource_group" "node_resource_group" {
+  name = azurerm_kubernetes_cluster.aks_cluster.node_resource_group
+}
+
 resource "azurerm_role_assignment" "acrpull_role" {
   count                = var.enable_acr ? 1 : 0
   scope                = var.acr_resource_id
@@ -36,3 +40,9 @@ resource "azurerm_role_assignment" "acrpull_role" {
   principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
 }
 
+# Giving cluster contributor rights over its own resource group
+resource "azurerm_role_assignment" "contributor_role_over_nodepool_resource_group" {
+  scope                = data.azurerm_resource_group.node_resource_group.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity.principal_id
+}
