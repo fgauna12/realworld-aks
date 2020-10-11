@@ -24,6 +24,25 @@ provider "kubernetes-alpha" {
   config_path = "~/.kube/config" // path to kubeconfig
 }
 
+resource "kubernetes_manifest" "velero_azure_identity_exception" {
+  provider = kubernetes-alpha
+
+  manifest = {
+    "apiVersion" = "aadpodidentity.k8s.io/v1"
+    "kind"       = "AzurePodIdentityException"
+    "metadata" = {
+      "name"      = "system-pods-exception"
+      "namespace" = "kube-system"
+    }
+    "spec" = {
+      "podLabels" = {
+        "kubernetes.azure.com/managedby" = "aks"
+      }
+    }
+  }
+
+}
+
 resource "kubernetes_manifest" "velero_azure_identity" {
   provider = kubernetes-alpha
 
@@ -54,7 +73,7 @@ resource "kubernetes_manifest" "velero_azure_identity_binding" {
     }
     spec = {
       azureIdentity = var.identity_name
-      selector      = var.identity_name
+      selector      = "velero"
     }
   }
 }
