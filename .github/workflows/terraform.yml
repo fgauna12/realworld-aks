@@ -73,7 +73,7 @@ jobs:
         RESOURCE_GROUP=$(terraform output -no-color resource_group_name)
         az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
         az account set -s $ARM_SUBSCRIPTION_ID
-        az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
+        az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME --admin
         echo "::set-env name=AKS_CLUSTER_NAME::$CLUSTER_NAME"
         echo "::set-env name=AKS_RESOURCE_GROUP::$RESOURCE_GROUP"
       working-directory: ./iac/staging/1-cluster
