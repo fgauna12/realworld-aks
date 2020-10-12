@@ -3,7 +3,7 @@ variable "resource_group_name" {
 }
 
 variable "container_registry_name" {
-  
+
 }
 
 variable "container_registry_sku" {
@@ -12,4 +12,8 @@ variable "container_registry_sku" {
 
 variable "location" {
   default = "East US"
+}
+
+variable "georeplication_locations" {
+
 }
