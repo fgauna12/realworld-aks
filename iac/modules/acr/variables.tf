@@ -13,3 +13,7 @@ variable "container_registry_sku" {
 variable "location" {
   default = "East US"
 }
+
+variable "georeplication_locations" {
+
+}

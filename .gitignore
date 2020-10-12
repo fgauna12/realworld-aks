@@ -5,3 +5,4 @@ iac/staging/3-bootstrap/.terraform/
 scripts/tmp.yml
 credentials-velero
 iac/staging/3-bootstrap/dev.log
+iac/examples/premium-acr-ha/.terraform/
