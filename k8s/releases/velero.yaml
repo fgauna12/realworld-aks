@@ -16,7 +16,7 @@ spec:
     configuration:
       provider: azure
       backupStorageLocation: 
-        bucket: azaks-realworld-staging-001
+        bucket: backups-azaks-realworld-staging-001
         config: 
           resourceGroup: rg-realworld-staging-001
           storageAccount: strwbackupsstaging001
