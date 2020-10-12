@@ -13,9 +13,17 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   dns_prefix          = var.dns_prefix
 
   default_node_pool {
-    name       = "default"
-    node_count = var.node_count
-    vm_size    = var.node_size
+    name               = "default"
+    node_count         = var.node_count
+    vm_size            = var.node_size
+    availability_zones = ["1", "2", "3"]
+  }
+
+  role_based_access_control  {
+    enabled = true
+    azure_active_directory {
+
+    }
   }
 
   kubernetes_version = var.kubernetes_version
