@@ -19,12 +19,12 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     availability_zones = ["1", "2", "3"]
   }
 
-  role_based_access_control {
-    enabled = true
-    azure_active_directory {
-      managed = true
-    }
-  }
+  # role_based_access_control {
+  #   enabled = true
+  #   azure_active_directory {
+  #     managed = true
+  #   }
+  # }
 
   kubernetes_version = var.kubernetes_version
 
