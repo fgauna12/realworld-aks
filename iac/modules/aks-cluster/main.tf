@@ -48,6 +48,14 @@ resource "azurerm_role_assignment" "acrpull_role" {
   principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
 }
 
+resource "azurerm_role_assignment" "acrpull_role" {
+  count                = var.enable_acr ? 1 : 0
+  scope                = var.acr_resource_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.kubelet_identity[0].object_id
+}
+
+
 # Giving cluster contributor rights over its own resource group
 resource "azurerm_role_assignment" "contributor_role_over_nodepool_resource_group" {
   scope                = data.azurerm_resource_group.node_resource_group.id
