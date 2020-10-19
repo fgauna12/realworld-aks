@@ -31,7 +31,7 @@ module "acr" {
 
   location                 = var.location
   resource_group_name      = azurerm_resource_group.resource_group.name
-  container_registry_name  = "ContosoRegistry"
+  container_registry_name  = "ContosoRegistry${random_string.random.result}"
   container_registry_sku   = "Premium"
   georeplication_locations = ["West US", "Central US"]
 }
