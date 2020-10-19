@@ -30,6 +30,11 @@ variable "enable_acr" {
   type = bool
 }
 
+variable "disable_role_assignments" {
+  type = bool
+  default = false
+}
+
 variable "acr_resource_id" {
   default = ""
 }
