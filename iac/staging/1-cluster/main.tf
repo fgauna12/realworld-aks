@@ -40,13 +40,14 @@ resource "azurerm_resource_group" "resource_group" {
 module "cluster" {
   source = "../../modules/aks-cluster"
 
-  location            = local.location
-  node_count          = local.node_count
-  environment         = local.environment_name
-  resource_group_name = azurerm_resource_group.resource_group.name
-  cluster_name        = local.cluster_name
-  dns_prefix          = local.cluster_name
-  enable_acr          = false
+  location                 = local.location
+  node_count               = local.node_count
+  environment              = local.environment_name
+  resource_group_name      = azurerm_resource_group.resource_group.name
+  cluster_name             = local.cluster_name
+  dns_prefix               = local.cluster_name
+  enable_acr               = false
+  disable_role_assignments = false
 }
 
 module "aks_backups" {
