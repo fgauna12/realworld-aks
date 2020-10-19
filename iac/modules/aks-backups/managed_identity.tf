@@ -6,7 +6,6 @@ resource "azurerm_user_assigned_identity" "velero_identity" {
 }
 
 data "azurerm_subscription" "current" {
-  
 }
 
 resource "azurerm_role_assignment" "contributor_role" {
