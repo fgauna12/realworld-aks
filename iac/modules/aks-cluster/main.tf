@@ -17,6 +17,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     node_count         = var.node_count
     vm_size            = var.node_size
     availability_zones = ["1", "2", "3"]
+    os_disk_size_gb    = var.os_disk_size_gb
   }
 
   kubernetes_version = var.kubernetes_version
@@ -35,7 +36,7 @@ data "azurerm_resource_group" "node_resource_group" {
 }
 
 resource "azurerm_role_assignment" "acrpull_role" {
-  count                = !var.disable_role_assignments && var.enable_acr ? 1 : 0
+  count                = ! var.disable_role_assignments && var.enable_acr ? 1 : 0
   scope                = var.acr_resource_id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id

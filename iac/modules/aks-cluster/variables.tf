@@ -22,6 +22,10 @@ variable "node_size" {
   default = "Standard_D2_v2"
 }
 
+variable "os_disk_size_gb" {
+  default = "1024"
+}
+
 variable dns_prefix {
   
 }
