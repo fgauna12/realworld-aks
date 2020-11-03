@@ -6,7 +6,11 @@ terraform {
   }
 }
 
-variable "resource_group_name" {
+variable "app_name" {
+  type = string
+}
+
+variable "environment_name" {
   type = string
 }
 
@@ -15,6 +19,11 @@ variable "location" {
 }
 
 resource "azurerm_resource_group" "resource_group" {
-  name     = var.resource_group_name
+  name     = "rg-${var.app_name}-${var.environment_name}-001"
   location = var.location
 }
+
+output "name" {
+  type = string
+}
+
