@@ -18,12 +18,17 @@ variable "location" {
   type = string
 }
 
+locals {
+  name = "rg-${var.app_name}-${var.environment_name}-001"
+}
+
 resource "azurerm_resource_group" "resource_group" {
-  name     = "rg-${var.app_name}-${var.environment_name}-001"
+  name     = local.name
   location = var.location
 }
 
 output "name" {
   type = string
+  value = local.name
 }
 
