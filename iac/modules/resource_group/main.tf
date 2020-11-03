@@ -18,6 +18,11 @@ variable "location" {
   type = string
 }
 
+variable "tags" {
+  type = map
+  default = {}
+}
+
 locals {
   name = "rg-${var.app_name}-${var.environment_name}-001"
 }
@@ -25,6 +30,7 @@ locals {
 resource "azurerm_resource_group" "resource_group" {
   name     = local.name
   location = var.location
+  tags = var.tags
 }
 
 output "resource_group_name" {
