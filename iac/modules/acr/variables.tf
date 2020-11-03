@@ -15,5 +15,5 @@ variable "location" {
 }
 
 variable "georeplication_locations" {
-
+  type = list(string)
 }
