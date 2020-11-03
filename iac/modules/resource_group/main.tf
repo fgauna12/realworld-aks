@@ -27,8 +27,7 @@ resource "azurerm_resource_group" "resource_group" {
   location = var.location
 }
 
-output "name" {
-  type = string
+output "resource_group_name" {
   value = local.name
 }
 
